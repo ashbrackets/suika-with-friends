@@ -1,17 +1,15 @@
 import {
   Body,
   Engine,
-  Bodies,
   Composite,
   Render,
   Runner,
   Events,
   Vector,
 } from "matter-js";
-import { Application, Sprite, Texture } from "pixi.js";
-import { gWidth, gHeight, borderHeight } from "./constants";
+import { Application, Sprite } from "pixi.js";
 import { createFruit, currentFruitsOnScreen, fruits } from "./fruits";
-import { runDropLine } from "./dropline";
+import { rand, runDropLine, runGameBorders } from "./functions";
 
 const debugCanvas = document.querySelector<HTMLCanvasElement>(".debugCanvas");
 const canvas = document.querySelector<HTMLCanvasElement>(".canvas");
@@ -19,11 +17,7 @@ const canvas = document.querySelector<HTMLCanvasElement>(".canvas");
 let wWidth = window.innerWidth
 let wHeight = window.innerHeight
 
-let app: Application;
-let render: Render;
-let engine: Engine;
-
-app = new Application({
+let app = new Application({
   width: wWidth,
   height: wHeight,
   view: canvas,
@@ -32,15 +26,15 @@ app = new Application({
   autoDensity: true,
 });
 
-engine = Engine.create();
+let engine = Engine.create();
 engine.gravity.scale = 0.0005;
 
-render = Render.create({
+let render = Render.create({
   canvas: debugCanvas,
   engine: engine,
   options: {
-    width: wWidth,
-    height: wHeight,
+    width: app.view.width,
+    height: app.view.height,
     background: "transparent",
     wireframeBackground: "transparent",
   },
@@ -50,6 +44,7 @@ var runner = Runner.create();
 Runner.run(runner, engine);
 
 runDropLine(app, canvas);
+runGameBorders(app, engine);
 
 let elapsed = 0.0;
 app.ticker.add((delta) => {
@@ -64,36 +59,7 @@ app.ticker.add((delta) => {
   }
 });
 
-let borderSize = 10;
-let ground = Bodies.rectangle(
-  gWidth / 2,
-  gHeight - borderSize / 2,
-  gWidth,
-  borderSize,
-  { isStatic: true }
-);
-let leftWall = Bodies.rectangle(
-  borderSize / 2,
-  gHeight - borderHeight / 2,
-  borderSize,
-  borderHeight,
-  { isStatic: true }
-);
-let rightWall = Bodies.rectangle(
-  gWidth - borderSize / 2,
-  gHeight - borderHeight / 2,
-  borderSize,
-  borderHeight,
-  { isStatic: true }
-);
-
-let borders = Body.create({
-  parts: [ground, leftWall, rightWall],
-  isStatic: true,
-});
-
-Composite.add(engine.world, borders);
-
+// Collision Handler
 Events.on(engine, "collisionStart", (event) => {
   const pairs = event.pairs;
 
@@ -124,7 +90,7 @@ Events.on(engine, "collisionStart", (event) => {
   });
 });
 
-const removeFruits = (fruitA, fruitB) => {
+const removeFruits = (fruitA: any,  fruitB: any) => {
   if (!fruitA || !fruitB) {
     return
   }
@@ -134,25 +100,25 @@ const removeFruits = (fruitA, fruitB) => {
   Composite.remove(engine.world, fruitB.rb)
   currentFruitsOnScreen.splice(currentFruitsOnScreen.indexOf(fruitA), 1)
   currentFruitsOnScreen.splice(currentFruitsOnScreen.indexOf(fruitB), 1)
-
-  console.log(fruitA, fruitB)
-  fruitA = undefined
-  fruitB = undefined
 }
 
-//Handling Input
-const rand = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+window.addEventListener('load', () => {
+  wWidth = window.innerWidth
+  wHeight = window.innerHeight
+
+  render.canvas.width = wWidth
+  render.canvas.height = wHeight
+})
 
 window.addEventListener('resize', () => {
   wWidth = window.innerWidth
   wHeight = window.innerHeight
 
-  render.canvas.width = app.view.width
-  render.canvas.height = app.view.height
+  render.canvas.width = wWidth
+  render.canvas.height = wHeight
 })
 
+//Handling Input
 onpointerup = (event) => {
   createFruit(app, engine, fruits[rand(0, 4)], event.clientX - canvas.offsetLeft, 50);
 };

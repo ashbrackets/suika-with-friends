@@ -73,6 +73,16 @@ export const runDropLine = (app: Application, canvas: HTMLCanvasElement) => {
     dropLine.position = dropPoint
     app.stage.addChild(dropLine);
 
+    window.addEventListener('pointerdown', (e) =>{
+        let mousePosX = e.clientX - canvas.offsetLeft
+        console.log('before: ', dropPoint)
+        if (mousePosX < bounds) dropPoint.x = bounds
+        else if (mousePosX > gWidth - bounds) dropPoint.x = gWidth - bounds
+        else dropPoint.x = mousePosX
+        console.log('after: ', dropPoint)
+        dropLine.x = dropPoint.x - dropLine.width / 2
+    })
+    
     window.addEventListener("pointermove", (e) => {
         mousePosition = e.clientX - canvas.offsetLeft
         if (mousePosition > bounds && mousePosition < gWidth - bounds) {

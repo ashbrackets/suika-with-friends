@@ -9,17 +9,17 @@ import {
 } from "matter-js";
 import { Application, Sprite } from "pixi.js";
 import { createFruit, currentFruitsOnScreen, fruits } from "./fruits";
-import {borderSize, dropPoint, mousePosition, rand, runDropLine, runGameBorders } from "./functions";
+import { borderSize, dropPoint, mousePosition, rand, runDropLine, runGameBorders } from "./functions";
 import { gWidth, gHeight, dropCooldown } from "./constants";
 
 export let bounds: number = 10
 
 const debugCanvas = document.querySelector<HTMLCanvasElement>(".debugCanvas");
-const canvas = document.querySelector<HTMLCanvasElement>(".canvas"); 
+const canvas = document.querySelector<HTMLCanvasElement>(".canvas");
 let app: Application;
 let render: Render;
 let engine: Engine;
-let currentFruit: {id: number,name: string , sprite: Sprite,rb: Body}
+let currentFruit: { id: number, name: string, sprite: Sprite, rb: Body }
 let dropLine: Sprite
 let canDrop = true
 let score: number = 0
@@ -32,10 +32,10 @@ onload = (e) => {
     backgroundAlpha: .5,
     autoDensity: true,
   });
-  
+
   engine = Engine.create();
   engine.gravity.scale = 0.0005;
-  
+
   // debug renderer
   // render = Render.create({
   //   canvas: debugCanvas,
@@ -51,7 +51,7 @@ onload = (e) => {
   var runner = Runner.create();
   Runner.run(runner, engine);
 
-    
+
   dropLine = runDropLine(app, canvas);
   runGameBorders(app, engine);
 
@@ -59,7 +59,7 @@ onload = (e) => {
   app.ticker.add(async (delta) => {
     elapsed += delta;
 
-    if(currentFruit){
+    if (currentFruit) {
       Body.setPosition(currentFruit.rb, dropPoint)
       Body.setSpeed(currentFruit.rb, 0)
       Body.setAngularVelocity(currentFruit.rb, 0)
@@ -102,13 +102,13 @@ onload = (e) => {
           await createFruit(app, engine, fruits[nextFruitIndex], collisionPoint.x, collisionPoint.y)
         }
         removeFruits(fruitA, fruitB)
-        score += fruits[nextFruitIndex-1].points
-        document.querySelector('#score').innerHTML = 'Score: '+score.toString()
+        score += fruits[nextFruitIndex - 1].points
+        document.querySelector('#score').innerHTML = 'Score: ' + score.toString()
       }
     });
   });
 
-  const removeFruits = (fruitA: any,  fruitB: any) => {
+  const removeFruits = (fruitA: any, fruitB: any) => {
     if (!fruitA || !fruitB) {
       return
     }
@@ -119,12 +119,12 @@ onload = (e) => {
     currentFruitsOnScreen.splice(currentFruitsOnScreen.indexOf(fruitA), 1)
     currentFruitsOnScreen.splice(currentFruitsOnScreen.indexOf(fruitB), 1)
   }
-  
+
 } // end of onload
 
 //Handling Input
-window.addEventListener('pointerup', () => {
-  if (canDrop){
+window.addEventListener('pointerup', (e) => {
+  if (canDrop) {
     getNextFruit()
   }
 });
@@ -132,14 +132,14 @@ window.addEventListener('pointerup', () => {
 // getting fruits
 let nextFruit: { name: string, texture: string, pivot: number[] };
 
-const getNextFruit = async () =>{
+const getNextFruit = async () => {
   dropLine.alpha = 0
-  currentFruit = undefined
+  currentFruit = undefined  // basically drops the fruit
   canDrop = false
   setTimeout(async () => {
     dropLine.alpha = 1
     await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
-    currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length-1]
+    currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]
     setBounds(currentFruit)
     nextFruit = fruits[rand(0, 4)];
     (document.getElementById('next-fruit-img') as HTMLImageElement).src = nextFruit.texture
@@ -147,10 +147,10 @@ const getNextFruit = async () =>{
   }, dropCooldown)
 }
 
-const setFruitsOnGameStart = async () =>{
+const setFruitsOnGameStart = async () => {
   nextFruit = fruits[rand(0, 4)];
   await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
-  currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length-1]
+  currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]
   setBounds(currentFruit)
   nextFruit = fruits[rand(0, 4)];
   (document.getElementById('next-fruit-img') as HTMLImageElement).src = nextFruit.texture
@@ -158,13 +158,13 @@ const setFruitsOnGameStart = async () =>{
 
 const setBounds = (currentFruit: { id?: number; name?: string; sprite: any; rb?: Body; }) => {
   bounds = currentFruit.sprite.width / 2 + borderSize
-  if(mousePosition < bounds){
+  if (mousePosition < bounds) {
     dropPoint.x = bounds
-    dropLine.position.x = bounds - dropLine.width/2
+    dropLine.position.x = bounds - dropLine.width / 2
   }
-  if(mousePosition > gWidth - bounds){
+  if (mousePosition > gWidth - bounds) {
     dropPoint.x = gWidth - bounds
-    dropLine.position.x = gWidth - bounds - dropLine.width/2
+    dropLine.position.x = gWidth - bounds - dropLine.width / 2
   }
 }
 

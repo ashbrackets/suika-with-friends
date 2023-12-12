@@ -1,5 +1,5 @@
 // game width and height
-export const gWidth = 350
-export const gHeight = 550
-export const borderHeight = 450
-
+export let scaleFactor = 1
+export let gWidth = 350 * scaleFactor
+export let gHeight = 550 * scaleFactor
+export let dropCooldown = 500

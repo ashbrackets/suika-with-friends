@@ -1,34 +1,45 @@
 import { Engine, Bodies, Body, Composite } from "matter-js";
 import { Application, Sprite, Texture } from "pixi.js";
-import { gWidth, gHeight, borderHeight } from "./constants";
+import { gHeight, gWidth } from "./constants";
+import { bounds } from './game'
+
+let borders: Body;
+export let borderSize: number
+export let borderHeight: number
+export let dropPoint: {x: number, y: number} = {x: 0, y: 0}
+dropPoint.x = gWidth / 2
+dropPoint.y = gHeight - gHeight * 0.9
+export let mousePosition: number
 
 export const runGameBorders = (app: Application, engine: Engine) => {
-    let borderSize = 10;
+    borderSize = 20;
+    borderHeight = gHeight * 80 / 100
     let ground = Bodies.rectangle(
-    gWidth / 2,
-    gHeight - borderSize / 2,
-    gWidth,
-    borderSize,
-    { isStatic: true }
+        gWidth / 2,
+        gHeight - borderSize / 2,
+        gWidth,
+        borderSize,
+        { isStatic: true, label: "ground" }
     );
     let leftWall = Bodies.rectangle(
-    borderSize / 2,
-    gHeight - borderHeight / 2,
-    borderSize,
-    borderHeight,
-    { isStatic: true }
+        borderSize / 2,
+        gHeight - borderHeight / 2,
+        borderSize,
+        borderHeight,
+        { isStatic: true, label: "leftWall" }
     );
     let rightWall = Bodies.rectangle(
-    gWidth - borderSize / 2,
-    gHeight - borderHeight / 2,
-    borderSize,
-    borderHeight,
-    { isStatic: true }
+        gWidth - borderSize / 2,
+        gHeight - borderHeight / 2,
+        borderSize,
+        borderHeight,
+        { isStatic: true, label: "rightWall" }
     );
 
-    let borders = Body.create({
-    parts: [ground, leftWall, rightWall],
-    isStatic: true,
+    borders = Body.create({
+        parts: [ground, leftWall, rightWall],
+        isStatic: true,
+        label: "borders",
     });
 
     Composite.add(engine.world, borders);
@@ -55,15 +66,21 @@ export const runGameBorders = (app: Application, engine: Engine) => {
     app.stage.addChild(groundSprite);
 }
 
-export const runDropLine = (app: Application, canvas: HTMLCanvasElement) => { 
+export const runDropLine = (app: Application, canvas: HTMLCanvasElement) => {
     const dropLine = Sprite.from(Texture.WHITE);
     dropLine.width = 3;
-    dropLine.height = gHeight;
+    dropLine.height = gHeight - dropPoint.y;
+    dropLine.position = dropPoint
     app.stage.addChild(dropLine);
 
-    onmousemove = (e) => {
-        dropLine.x = e.clientX - canvas.offsetLeft
-    }
+    window.addEventListener("mousemove", (e) => {
+        mousePosition = e.clientX - canvas.offsetLeft
+        if (mousePosition > bounds && mousePosition < gWidth - bounds) {
+            dropPoint.x = mousePosition
+            dropLine.x = dropPoint.x - dropLine.width / 2
+        }
+    })
+    return dropLine
 }
 
 export const rand = (min: number, max: number) => {

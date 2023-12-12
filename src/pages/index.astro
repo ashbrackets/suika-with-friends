@@ -1,21 +1,38 @@
 ---
+
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Suika With Friends</title>
-	</head>
-	<body class="bg-slate-700">
-		<div class="">
-			<div class="flex w-screen h-screen justify-center items-center">
-				<canvas class="canvas absolute z-10" />
-				<canvas class="debugCanvas z-0" />
-			</div>
-		</div>
-	</body>
-	<script src="../scripts/game.ts" />
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Suika With Friends</title>
+  </head>
+  <body class="bg-cyan-800">
+    <div class="flex w-screen h-screen justify-center items-center">
+      <div class="game flex flex-row">
+        <div class="left-section">
+          <canvas class="debugCanvas absolute"></canvas>
+          <canvas class="canvas overflow-auto rounded-lg"></canvas>
+        </div>
+        <div class="right-section flex flex-col pl-[5px]">
+          <div id="next-fruit" class="bg-[#0B2F3B] rounded-lg flex flex-col justify-center items-center">
+            <div class="text-center text-white font-bold text-xl pb-[3px]">Next Fruit</div>
+            <div class="w-[100px] h-[100px] flex justify-center items-center">
+              <img
+                class="p-5 pointer-events-none select-none max-w-[100px] max-h-[100px]"
+                id="next-fruit-img"
+              />
+            </div>
+          </div>
+          <div  class="pt-[150%] flex justify-center items-center">
+            <div id="score" class="text-center text-white font-bold text-xl bg-[#0B2F3B] rounded-lg w-[120%]">Score: 0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="../scripts/game.ts"></script>
 </html>

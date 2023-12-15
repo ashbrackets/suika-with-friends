@@ -35,7 +35,7 @@ onload = (e) => {
 
   engine = Engine.create();
   engine.gravity.scale = 0.0005;
-
+  engine.timing.timeScale = .5
   // debug renderer
   // render = Render.create({
   //   canvas: debugCanvas,
@@ -83,8 +83,6 @@ onload = (e) => {
       const bodyB = pair.bodyB;
       let fruitA: { id: number, name: string, sprite: Sprite, rb: Body } | undefined = undefined
       let fruitB: { id: number, name: string, sprite: Sprite, rb: Body } | undefined = undefined
-
-
       if (bodyA.label === bodyB.label) {
         for (const fruit of currentFruitsOnScreen) {
           if (bodyA.id === fruit.rb.id) {
@@ -94,21 +92,20 @@ onload = (e) => {
             fruitB = fruit
           }
         }
-
+        await removeFruits(fruitA, fruitB)
         const direction = Vector.normalise(Vector.sub(bodyB.position, bodyA.position));
         const collisionPoint = Vector.add(bodyA.position, Vector.mult(direction, bodyA.circleRadius));
         let nextFruitIndex = fruits.findIndex(fruit => fruit.name === fruitA.name) + 1
         if (nextFruitIndex < fruits.length) {
           await createFruit(app, engine, fruits[nextFruitIndex], collisionPoint.x, collisionPoint.y)
         }
-        removeFruits(fruitA, fruitB)
         score += fruits[nextFruitIndex - 1].points
         document.querySelector('#score').innerHTML = 'Score: ' + score.toString()
       }
     });
   });
 
-  const removeFruits = (fruitA: any, fruitB: any) => {
+  const removeFruits = async (fruitA: any, fruitB: any) => {
     if (!fruitA || !fruitB) {
       return
     }
@@ -141,18 +138,18 @@ const getNextFruit = async () => {
     await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
     currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]
     setBounds(currentFruit)
-    nextFruit = fruits[rand(0, 4)];
+    nextFruit = fruits[4];
     (document.getElementById('next-fruit-img') as HTMLImageElement).src = nextFruit.texture
     canDrop = true
   }, dropCooldown)
 }
 
 const setFruitsOnGameStart = async () => {
-  nextFruit = fruits[rand(0, 4)];
+  nextFruit = fruits[4];
   await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
   currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]
   setBounds(currentFruit)
-  nextFruit = fruits[rand(0, 4)];
+  nextFruit = fruits[4];
   (document.getElementById('next-fruit-img') as HTMLImageElement).src = nextFruit.texture
 }
 

@@ -72,12 +72,29 @@ export const fruits = [
   }
 ];
 
+class Fruit{
+  name: string
+  sprite: Sprite
+  rb: Body
+  fruit: { name: string, texture: string, pivot: number[] }
+  x: number
+  y: number
+  noOfCollisions: number
+
+  constructor(name: string, sprite: Sprite, rb: Body, fruit: { name: string, texture: string, pivot: number[] }) {
+    this.name = name
+    this.sprite = sprite
+    this.rb = rb
+    this.fruit = fruit
+  }
+}
+
 export const createFruit = async (
   app: Application,
   engine: Engine,
   fruit: { name: string, texture: string, pivot: number[] },
-  x: number,
-  y: number
+  dropX: number,
+  dropY: number
 ) => {
   const texture = await Assets.load(fruit.texture);
   let newFruit = Sprite.from(texture);
@@ -85,7 +102,7 @@ export const createFruit = async (
   newFruit.pivot.set(fruit.pivot[0], fruit.pivot[1])
   app.stage.addChild(newFruit)
 
-  let rigidbody = Bodies.circle(x, y, newFruit.width/2, {label: fruit.name})
+  let rigidbody = Bodies.circle(dropX, dropY, newFruit.width/2, {label: fruit.name})
   Composite.add(engine.world, rigidbody)
   currentFruitsOnScreen.push({id: rigidbody.id,name: fruit.name , sprite: newFruit,rb: rigidbody})
 };

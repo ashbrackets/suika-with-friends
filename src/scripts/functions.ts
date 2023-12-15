@@ -75,11 +75,9 @@ export const runDropLine = (app: Application, canvas: HTMLCanvasElement) => {
 
     window.addEventListener('pointerdown', (e) =>{
         let mousePosX = e.clientX - canvas.offsetLeft
-        console.log('before: ', dropPoint)
         if (mousePosX < bounds) dropPoint.x = bounds
         else if (mousePosX > gWidth - bounds) dropPoint.x = gWidth - bounds
         else dropPoint.x = mousePosX
-        console.log('after: ', dropPoint)
         dropLine.x = dropPoint.x - dropLine.width / 2
     })
     
@@ -96,3 +94,7 @@ export const runDropLine = (app: Application, canvas: HTMLCanvasElement) => {
 export const rand = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+export const sleep = (ms: number) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

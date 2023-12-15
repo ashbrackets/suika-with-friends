@@ -9,7 +9,7 @@ import {
 } from "matter-js";
 import { Application, Sprite } from "pixi.js";
 import { createFruit, currentFruitsOnScreen, fruits } from "./fruits";
-import { borderSize, dropPoint, mousePosition, rand, runDropLine, runGameBorders } from "./functions";
+import { borderSize, dropPoint, mousePosition, rand, runDropLine, runGameBorders, sleep } from "./functions";
 import { gWidth, gHeight, dropCooldown } from "./constants";
 
 export let bounds: number = 10
@@ -23,6 +23,7 @@ let currentFruit: { id: number, name: string, sprite: Sprite, rb: Body }
 let dropLine: Sprite
 let canDrop = true
 let score: number = 0
+let colliding = []
 
 onload = (e) => {
   app = new Application({
@@ -35,7 +36,7 @@ onload = (e) => {
 
   engine = Engine.create();
   engine.gravity.scale = 0.0005;
-  engine.timing.timeScale = .5
+  
   // debug renderer
   // render = Render.create({
   //   canvas: debugCanvas,
@@ -83,7 +84,14 @@ onload = (e) => {
       const bodyB = pair.bodyB;
       let fruitA: { id: number, name: string, sprite: Sprite, rb: Body } | undefined = undefined
       let fruitB: { id: number, name: string, sprite: Sprite, rb: Body } | undefined = undefined
-      if (bodyA.label === bodyB.label) {
+      let canCollide = true
+      for(let i = 0; i < colliding.length;i++){
+        if(colliding[i] === bodyA.id || colliding[i] === bodyB.id){
+          canCollide = false
+        }
+      }
+      if (bodyA.label === bodyB.label && canCollide) {
+        colliding.push(bodyA.id, bodyB.id)
         for (const fruit of currentFruitsOnScreen) {
           if (bodyA.id === fruit.rb.id) {
             fruitA = fruit
@@ -92,12 +100,13 @@ onload = (e) => {
             fruitB = fruit
           }
         }
-        await removeFruits(fruitA, fruitB)
+        
+        removeFruits(fruitA, fruitB)
         const direction = Vector.normalise(Vector.sub(bodyB.position, bodyA.position));
         const collisionPoint = Vector.add(bodyA.position, Vector.mult(direction, bodyA.circleRadius));
         let nextFruitIndex = fruits.findIndex(fruit => fruit.name === fruitA.name) + 1
         if (nextFruitIndex < fruits.length) {
-          await createFruit(app, engine, fruits[nextFruitIndex], collisionPoint.x, collisionPoint.y)
+          createFruit(app, engine, fruits[nextFruitIndex], collisionPoint.x, collisionPoint.y)
         }
         score += fruits[nextFruitIndex - 1].points
         document.querySelector('#score').innerHTML = 'Score: ' + score.toString()

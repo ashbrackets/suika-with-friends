@@ -36,7 +36,7 @@ onload = (e) => {
 
   engine = Engine.create();
   engine.gravity.scale = 0.0005;
-  
+
   // debug renderer
   // render = Render.create({
   //   canvas: debugCanvas,
@@ -85,13 +85,15 @@ onload = (e) => {
       let fruitA: { id: number, name: string, sprite: Sprite, rb: Body } | undefined = undefined
       let fruitB: { id: number, name: string, sprite: Sprite, rb: Body } | undefined = undefined
       let canCollide = true
-      for(let i = 0; i < colliding.length;i++){
-        if(colliding[i] === bodyA.id || colliding[i] === bodyB.id){
-          canCollide = false
-        }
+
+      if(colliding.includes(bodyA.id) || colliding.includes(bodyB.id)){
+        canCollide = false
+        colliding.splice(0, colliding.length);
       }
+
       if (bodyA.label === bodyB.label && canCollide) {
         colliding.push(bodyA.id, bodyB.id)
+        console.log(colliding)
         for (const fruit of currentFruitsOnScreen) {
           if (bodyA.id === fruit.rb.id) {
             fruitA = fruit

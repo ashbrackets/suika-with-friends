@@ -11,15 +11,21 @@
     <title>Suika With Friends</title>
   </head>
   <body class="bg-cyan-800 touch-none">
+    <div class="fixed bg-red-400 rounded-lg"><button class="bg-red-400 rounded-lg font-bold text-md m-1" id="devMode">DEV MODE</button></div>
     <div class="flex w-screen h-screen justify-center items-center">
-      <div class="game flex flex-row max-sm:flex-col-reverse">
+      <div class="game flex flex-row max-sm:flex-col-reverse justify-between">
         <div class="left-section">
           <canvas class="debugCanvas absolute"></canvas>
           <canvas class="canvas overflow-auto rounded-lg"></canvas>
         </div>
         <div class="right-section flex flex-col pl-[5px] pr-[5px]">
-          <div id="next-fruit" class="bg-[#0B2F3B] rounded-lg flex flex-col justify-center items-center sm:w-[110%]">
-            <div class="text-center text-white font-bold text-xl pb-[3px]">Next Fruit</div>
+          <div
+            id="next-fruit"
+            class="bg-[#0B2F3B] rounded-lg flex flex-col justify-center items-center sm:w-[110%]"
+          >
+            <div class="text-center text-white font-bold text-xl pb-[3px]">
+              Next Fruit
+            </div>
             <div class="w-[100px] h-[100px] flex justify-center items-center">
               <img
                 class="p-5 pointer-events-none select-none max-w-[100px] max-h-[100px]"
@@ -27,12 +33,19 @@
               />
             </div>
           </div>
-          <div  class="sm:pt-[150%] flex justify-center items-center">
-            <div id="score" class="text-center text-white font-bold text-xl bg-[#0B2F3B] rounded-lg w-[110%]">Score: 0</div>
+          <div class="sm:pt-[150%] flex justify-center items-center">
+            <div
+              id="score"
+              class="text-center text-white font-bold text-xl bg-[#0B2F3B] rounded-lg w-[110%]"
+            >
+              Score: 0
+            </div>
           </div>
         </div>
       </div>
+      <!-- <div id="remotePlayer" class="w-[460px] h-[550px]"></div>-->
     </div>
   </body>
   <script src="../scripts/game.ts"></script>
+  <script src="../scripts/app.js"></script>
 </html>

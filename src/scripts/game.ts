@@ -24,6 +24,7 @@ let dropLine: Sprite
 let canDrop = true
 let score: number = 0
 let colliding = []
+let fruitDropIndex = fruits[rand(0,4)]
 
 onload = (e) => {
   app = new Application({
@@ -145,22 +146,34 @@ const getNextFruit = async () => {
   currentFruit = undefined  // basically drops the fruit
   canDrop = false
   setTimeout(async () => {
+    //fix this
+    if(isDevMode){
+      fruitDropIndex = fruits[4]
+    }else{
+      fruitDropIndex = fruits[rand(0,4)]
+    }
     dropLine.alpha = 1
     await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
     currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]
     setBounds(currentFruit)
-    nextFruit = fruits[4];
+    nextFruit = fruitDropIndex;
     (document.getElementById('next-fruit-img') as HTMLImageElement).src = nextFruit.texture
     canDrop = true
   }, dropCooldown)
 }
 
 const setFruitsOnGameStart = async () => {
-  nextFruit = fruits[4];
+  //fix this
+  if(isDevMode){
+    fruitDropIndex = fruits[4]
+  }else{
+    fruitDropIndex = fruits[rand(0,4)]
+  }
+  nextFruit = fruitDropIndex;
   await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
   currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]
   setBounds(currentFruit)
-  nextFruit = fruits[4];
+  nextFruit = fruitDropIndex;
   (document.getElementById('next-fruit-img') as HTMLImageElement).src = nextFruit.texture
 }
 
@@ -177,3 +190,17 @@ const setBounds = (currentFruit: { id?: number; name?: string; sprite: any; rb?:
 }
 
 setTimeout(setFruitsOnGameStart, 100)
+
+window.addEventListener('resize', (e) => {
+  console.log(window.innerWidth, window.innerHeight)
+})
+
+
+// Dev Mode is terrible pls fix
+document.querySelector('#devMode').addEventListener('click', (e) => {
+  devMode()
+})
+let isDevMode = false
+const devMode = () =>{
+  isDevMode = !isDevMode
+}

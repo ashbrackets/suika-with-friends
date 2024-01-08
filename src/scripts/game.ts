@@ -147,11 +147,8 @@ const getNextFruit = async () => {
   canDrop = false
   setTimeout(async () => {
     //fix this
-    if(isDevMode){
-      fruitDropIndex = fruits[4]
-    }else{
-      fruitDropIndex = fruits[rand(0,4)]
-    }
+    fruitDropIndex = isDevMode ? fruits[4] : fruits[rand(0, 4)];
+
     dropLine.alpha = 1
     await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
     currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]
@@ -164,11 +161,8 @@ const getNextFruit = async () => {
 
 const setFruitsOnGameStart = async () => {
   //fix this
-  if(isDevMode){
-    fruitDropIndex = fruits[4]
-  }else{
-    fruitDropIndex = fruits[rand(0,4)]
-  }
+  fruitDropIndex = isDevMode ? fruits[4] : fruits[rand(0, 4)];
+
   nextFruit = fruitDropIndex;
   await createFruit(app, engine, nextFruit, dropPoint.x, dropPoint.y);
   currentFruit = currentFruitsOnScreen[currentFruitsOnScreen.length - 1]

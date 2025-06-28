@@ -10,18 +10,36 @@
     <meta name="generator" content={Astro.generator} />
     <title>Suika With Friends</title>
   </head>
-  <body class="bg-cyan-800 touch-none">
-    <div class="fixed bg-red-400 rounded-lg"><button class="bg-red-400 rounded-lg font-bold text-md m-1" id="devMode">DEV MODE</button></div>
+  <body class="bg-orange-300 touch-none">
+    <div class="fixed rounded-lg h-screen w-[20%]">
+      <!-- <button class="bg-red-400 rounded-lg font-bold text-md p-2 m-1" id="devMode">DEV MODE</button> -->
+       <div class="flex flex-col gap-8 h-full pl-4 pt-4">
+        <img src="/suikawithfriendsLogoV1.png" alt="Suika With Friends Logo">
+        <div id="multiplayer" class="flex flex-col gap-2 w-full rounded-lg h-fit ring-2 ring-black/20 p-4 bg-white/10">
+          <p class="text-center text-white font-bold text-2xl">Multiplayer</p>
+          <input type="text" placeholder="Enter Name" class="p-2 rounded-lg h-8 bg-white/60 playerName">
+          <button class="host text-center w-full bg-blue-700 rounded-lg ring-2 text-white font-bold hover:ring-black/50 text-xl">Host</button>
+          <input type="text" placeholder="Enter Room Code" class="roomCode p-2 rounded-lg h-8 bg-white/60">
+          <button class="join text-center w-full bg-blue-700 rounded-lg ring-2 hover:ring-black/50 text-white font-bold text-xl">Join</button>
+          <button class="leave text-center w-full bg-red-700 rounded-lg ring-2 hover:ring-black/50 text-white font-bold text-xl mt-2">Leave Room</button>
+          <div id="roomCodeDisplay" class="mt-2 text-center text-white font-bold text-lg"></div>
+          <div id="playerList" class="mt-4 bg-white/20 rounded-lg p-2">
+            <p class="text-white font-bold text-lg mb-2">Players:</p>
+            <ul class="player-names text-white text-md list-disc list-inside"></ul>
+          </div>
+        </div>
+       </div>
+    </div>
     <div class="flex w-screen h-screen justify-center items-center">
       <div class="game flex flex-row max-sm:flex-col-reverse justify-between">
         <div class="left-section">
-          <canvas class="debugCanvas absolute"></canvas>
+          <canvas class="debugCanvas absolute" hidden></canvas>
           <canvas class="canvas overflow-auto rounded-lg"></canvas>
         </div>
-        <div class="right-section flex flex-col pl-[5px] pr-[5px]">
+        <div class="right-section flex flex-col pl-[5px] pr-[5px] w-[150px]">
           <div
             id="next-fruit"
-            class="bg-[#0B2F3B] rounded-lg flex flex-col justify-center items-center sm:w-[110%]"
+            class="bg-[#0B2F3B] rounded-lg flex flex-col justify-center items-center"
           >
             <div class="text-center text-white font-bold text-xl pb-[3px]">
               Next Fruit
@@ -33,19 +51,18 @@
               />
             </div>
           </div>
-          <div class="sm:pt-[150%] flex justify-center items-center">
+          <div class="pt-5 flex justify-center items-center">
             <div
               id="score"
-              class="text-center text-white font-bold text-xl bg-[#0B2F3B] rounded-lg w-[110%]"
+              class="text-center text-white font-bold text-xl bg-[#0B2F3B] rounded-lg w-full py-1"
             >
               Score: 0
             </div>
           </div>
         </div>
       </div>
-      <!-- <div id="remotePlayer" class="w-[460px] h-[550px]"></div>-->
     </div>
-  </body>
-  <script src="../scripts/game.ts"></script>
-  <script src="../scripts/app.js"></script>
+    <script src="../scripts/game.ts" />
+    <script src="../scripts/multiplayer.ts" />
+</body>
 </html>

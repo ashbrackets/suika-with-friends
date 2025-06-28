@@ -11,6 +11,7 @@ import { Application, Sprite } from "pixi.js";
 import { createFruit, currentFruitsOnScreen, fruits } from "./fruits";
 import { borderSize, dropPoint, mousePosition, rand, runDropLine, runGameBorders, sleep } from "./functions";
 import { gWidth, gHeight, dropCooldown } from "./constants";
+import io from 'socket.io-client'
 
 export let bounds: number = 10
 
@@ -24,7 +25,7 @@ let dropLine: Sprite
 let canDrop = true
 let score: number = 0
 let colliding = []
-let fruitDropIndex = fruits[rand(0,4)]
+let fruitDropIndex = fruits[rand(0, 4)]
 
 onload = (e) => {
   app = new Application({
@@ -87,7 +88,7 @@ onload = (e) => {
       let fruitB: { id: number, name: string, sprite: Sprite, rb: Body } | undefined = undefined
       let canCollide = true
 
-      if(colliding.includes(bodyA.id) || colliding.includes(bodyB.id)){
+      if (colliding.includes(bodyA.id) || colliding.includes(bodyB.id)) {
         canCollide = false
         colliding.splice(0, colliding.length);
       }
@@ -103,7 +104,7 @@ onload = (e) => {
             fruitB = fruit
           }
         }
-        
+
         removeFruits(fruitA, fruitB)
         const direction = Vector.normalise(Vector.sub(bodyB.position, bodyA.position));
         const collisionPoint = Vector.add(bodyA.position, Vector.mult(direction, bodyA.circleRadius));
@@ -132,11 +133,15 @@ onload = (e) => {
 } // end of onload
 
 //Handling Input
-window.addEventListener('pointerup', (e) => {
+canvas.addEventListener('pointerup', (e) => {
   if (canDrop) {
     getNextFruit()
   }
 });
+
+document.addEventListener('pointerup', (e) => {
+  console.log(e.target)
+})
 
 // getting fruits
 let nextFruit: { name: string, texture: string, pivot: number[] };
@@ -191,10 +196,10 @@ window.addEventListener('resize', (e) => {
 
 
 // Dev Mode is terrible pls fix
-document.querySelector('#devMode').addEventListener('click', (e) => {
-  devMode()
-})
+// document.querySelector('#devMode').addEventListener('click', (e) => {
+//   devMode()
+// })
 let isDevMode = false
-const devMode = () =>{
-  isDevMode = !isDevMode
-}
+// const devMode = () => {
+//   isDevMode = !isDevMode
+// }

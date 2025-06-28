@@ -1,5 +1,7 @@
 # Changelog
 ---
+v0.2.0
+- can only click on board to drop
 
 v0.1.6
 - added DEV MODE (allows you to drop only oranges)

@@ -7,7 +7,8 @@ const nameInput = document.querySelector('.playerName') as HTMLInputElement | nu
 const roomCode = document.querySelector('.roomCode') as HTMLInputElement | null;
 const playerList = document.querySelector('.player-names') as HTMLUListElement | null;
 
-let socket: Socket | null = null;
+export let socket: Socket | null = null;
+export let roomCodeString: string = null
 const serverDomain: string = 'http://localhost:3000'
 
 hostButton?.addEventListener('click', () => {
@@ -17,8 +18,8 @@ hostButton?.addEventListener('click', () => {
             console.log('Connected as host');
             let name: string = nameInput?.value || socket!.id;
             createRoom(name);
+            setupRoomListeners();
         });
-        setupRoomListeners();
     }
 });
 
@@ -33,8 +34,8 @@ joinButton?.addEventListener('click', () => {
             console.log('Connected as joiner');
             let name: string = nameInput?.value || socket!.id;
             joinRoom(roomCode.value, name);
+            setupRoomListeners();
         });
-        setupRoomListeners();
     } else {
         let name: string = nameInput?.value || socket!.id;
         joinRoom(roomCode.value, name);
@@ -55,6 +56,12 @@ function setupRoomListeners() {
     socket.on('roomUpdate', (room) => {
         if (room && Array.isArray(room.players)) {
             updatePlayerList(room.players.map((p: any) => p.name));
+        }
+    });
+    socket.on("gameStateUpdate", ({ id, gameState }) => {
+        console.log(id)
+        if (id !== socket.id) {
+            console.log(`Received game state from ${id}:`, gameState);
         }
     });
 }
@@ -78,6 +85,7 @@ function createRoom(playerName: string) {
             if (roomCodeDisplay) {
                 roomCodeDisplay.textContent = `Room Code: ${response.roomCode}`;
             }
+            roomCodeString = response.roomCode
         }
     });
 }
@@ -91,10 +99,9 @@ function joinRoom(roomCode: string, playerName: string) {
             if (roomCodeDisplay) {
                 roomCodeDisplay.textContent = `Room Code: ${roomCode}`;
             }
-            // Optionally update UI here
+            roomCodeString = roomCode
         } else {
             console.error(response?.error || "Failed to join room");
-            // Optionally show error to user
         }
     });
 }

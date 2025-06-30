@@ -53,6 +53,11 @@ io.on("connection", (socket) => {
         io.to(roomCode).emit("roomUpdate", room);
     });
 
+    socket.on("gameStateUpdate", ({ roomCode, id, gameState }, callback) => {
+        console.log(id, gameState, roomCode)
+        io.to(roomCode).emit("gameStateUpdate", { id, gameState })
+    })
+
     socket.on("disconnect", () => {
         console.log("Player Disconnected");
         // Remove player from all rooms

@@ -12,6 +12,7 @@ import { createFruit, currentFruitsOnScreen, fruits } from "./fruits";
 import { borderSize, dropPoint, mousePosition, rand, runDropLine, runGameBorders, sleep } from "./functions";
 import { gWidth, gHeight, dropCooldown } from "./constants";
 import io from 'socket.io-client'
+import { roomCodeString, socket } from "./multiplayer";
 
 export let bounds: number = 10
 
@@ -139,9 +140,9 @@ canvas.addEventListener('pointerup', (e) => {
   }
 });
 
-document.addEventListener('pointerup', (e) => {
-  console.log(e.target)
-})
+// document.addEventListener('pointerup', (e) => {
+//   console.log(e.target)
+// })
 
 // getting fruits
 let nextFruit: { name: string, texture: string, pivot: number[] };
@@ -203,3 +204,22 @@ let isDevMode = false
 // const devMode = () => {
 //   isDevMode = !isDevMode
 // }
+setInterval(() => {
+  // console.log(socket, roomCodeString)
+  if (socket && roomCodeString) {
+    console.log("Emmitting from: ", socket.id)
+    socket.emit("gameStateUpdate", {
+      roomCode: roomCodeString,
+      id: socket.id,
+      gameState: {
+        fruits: currentFruitsOnScreen.map(fruit => ({
+          name: fruit.name,
+          x: fruit.rb.position.x,
+          y: fruit.rb.position.y,
+          angle: fruit.rb.angle
+        })),
+        score
+      }
+    });
+  }
+}, 33); // 33ms interval (~30 FPS)

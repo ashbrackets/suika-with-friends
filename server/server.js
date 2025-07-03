@@ -54,7 +54,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("gameStateUpdate", ({ roomCode, id, gameState }, callback) => {
-        console.log(id, gameState, roomCode)
         io.to(roomCode).emit("gameStateUpdate", { id, gameState })
     })
 

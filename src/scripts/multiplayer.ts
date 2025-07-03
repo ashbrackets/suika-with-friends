@@ -1,11 +1,15 @@
 import { io, Socket } from 'socket.io-client';
+import { updateMiniBoard, removeMiniBoard } from './mini_boards';
 
 const hostButton = document.querySelector('.host');
 const joinButton = document.querySelector('.join');
 const leaveButton = document.querySelector('.leave');
 const nameInput = document.querySelector('.playerName') as HTMLInputElement | null;
-const roomCode = document.querySelector('.roomCode') as HTMLInputElement | null;
+const roomCodeInput = document.querySelector('.roomCodeInput') as HTMLInputElement | null;
 const playerList = document.querySelector('.player-names') as HTMLUListElement | null;
+const playerListContainer = document.querySelector('#playerListContainer')
+const roomCodeContainer = document.querySelector('#roomCodeContainer');
+const roomCodeDisplay = roomCodeContainer.querySelector('#roomCodeDisplay')
 
 export let socket: Socket | null = null;
 export let roomCodeString: string = null
@@ -24,7 +28,7 @@ hostButton?.addEventListener('click', () => {
 });
 
 joinButton?.addEventListener('click', () => {
-    if (!roomCode?.value) {
+    if (!roomCodeInput?.value) {
         console.log("Room code is empty.");
         return;
     }
@@ -33,12 +37,12 @@ joinButton?.addEventListener('click', () => {
         socket.on('connect', () => {
             console.log('Connected as joiner');
             let name: string = nameInput?.value || socket!.id;
-            joinRoom(roomCode.value, name);
+            joinRoom(roomCodeInput.value, name);
             setupRoomListeners();
         });
     } else {
         let name: string = nameInput?.value || socket!.id;
-        joinRoom(roomCode.value, name);
+        joinRoom(roomCodeInput.value, name);
     }
 });
 
@@ -48,6 +52,9 @@ leaveButton?.addEventListener('click', () => {
         socket = null;
         updatePlayerList([]);
         console.log('Left room and disconnected');
+        roomCodeContainer.classList.add('hidden')
+        playerListContainer.classList.add('hidden')
+        leaveButton.classList.add('hidden')
     }
 });
 
@@ -55,6 +62,13 @@ function setupRoomListeners() {
     if (!socket) return;
     socket.on('roomUpdate', (room) => {
         if (room && Array.isArray(room.players)) {
+            const currentIds = room.players.map((p: any) => p.id);
+            const allMiniIds = Array.from(document.querySelectorAll('.mini-board')).map(div => div.getAttribute('data-id'));
+            allMiniIds.forEach(id => {
+                if (id && !currentIds.includes(id) && id !== socket.id) {
+                    removeMiniBoard(id);
+                }
+            });
             updatePlayerList(room.players.map((p: any) => p.name));
         }
     });
@@ -62,6 +76,8 @@ function setupRoomListeners() {
         console.log(id)
         if (id !== socket.id) {
             console.log(`Received game state from ${id}:`, gameState);
+            // Send data to miniBoard
+            updateMiniBoard(id, { ...gameState, id, name: id })
         }
     });
 }
@@ -81,11 +97,11 @@ function createRoom(playerName: string) {
         console.log(response);
         if (response.roomCode) {
             console.log("Room created:", response.roomCode);
-            const roomCodeDisplay = document.getElementById('roomCodeDisplay');
-            if (roomCodeDisplay) {
-                roomCodeDisplay.textContent = `Room Code: ${response.roomCode}`;
-            }
+            roomCodeDisplay.textContent = `Room Code: ${response.roomCode}`;
             roomCodeString = response.roomCode
+            roomCodeContainer.classList.remove('hidden')
+            playerListContainer.classList.remove('hidden')
+            leaveButton.classList.remove('hidden')
         }
     });
 }
@@ -95,11 +111,11 @@ function joinRoom(roomCode: string, playerName: string) {
         console.log(response);
         if (response?.success) {
             console.log("Joined room:", roomCode);
-            const roomCodeDisplay = document.getElementById('roomCodeDisplay');
-            if (roomCodeDisplay) {
-                roomCodeDisplay.textContent = `Room Code: ${roomCode}`;
-            }
+            roomCodeDisplay.textContent = `Room Code: ${roomCode}`; 
             roomCodeString = roomCode
+            roomCodeContainer.classList.remove('hidden')
+            playerListContainer.classList.remove('hidden')
+            leaveButton.classList.remove('hidden')
         } else {
             console.error(response?.error || "Failed to join room");
         }

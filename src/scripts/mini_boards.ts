@@ -23,18 +23,24 @@ type MiniBoardState = {
 const miniBoards: Record<string, HTMLDivElement> = {};
 const miniBoardsContainer = document.getElementById('miniBoardsContainer');
 
+// let i = 0
+// while(i < 100){
+//     i += 1
+//     updateMiniBoard(`${i}`, {fruits: [], score: 0, id: `${i}`, name: ""})
+// }
+
 export function updateMiniBoard(id: string, state: MiniBoardState) {
     if (!miniBoardsContainer) return;
 
     // Create mini board if it doesn't exist
     if (!miniBoards[id]) {
         const board = document.createElement('div');
-        board.className = 'mini-board bg-white/20 rounded-lg p-2 flex flex-col items-center';
+        board.className = 'mini-board bg-white/20 rounded-lg p-2 flex flex-col items-center w-full h-fit';
         board.setAttribute('data-id', id);
         board.innerHTML = `
             <div class="font-bold text-sm text-white" id="mini-name"></div>
             <div class="text-xs text-white" id="mini-score"></div>
-            <canvas width="${gWidth / 5}" height="${gHeight / 5}" class="mini-canvas rounded bg-black/30"></canvas>
+            <canvas width="${gWidth / 2.5}" height="${gHeight / 2.5}" class="mini-canvas rounded bg-black/30"></canvas>
         `;
         miniBoards[id] = board;
         miniBoardsContainer.appendChild(board);
@@ -46,13 +52,13 @@ export function updateMiniBoard(id: string, state: MiniBoardState) {
 
     // Draw fruits on mini canvas
      const ctx = (board.querySelector('.mini-canvas') as HTMLCanvasElement).getContext('2d');
-    ctx.clearRect(0, 0, gWidth / 5, gHeight / 5);
-    const scale = 0.1;
+    ctx.clearRect(0, 0, gWidth / 2.5, gHeight / 2.5);
+    const scale = 0.2;
 
     for (const fruit of state.fruits) {
         const fruitData = fruitImages[fruit.name]
         ctx.save();
-        ctx.translate(fruit.x  / 5, fruit.y / 5);
+        ctx.translate(fruit.x  / 2.5, fruit.y / 2.5);
         ctx.rotate(fruit.angle);
 
         const img = fruitData.img;

@@ -10,10 +10,10 @@
     <meta name="generator" content={Astro.generator} />
     <title>Suika With Friends</title>
   </head>
-  <body class="bg-orange-300 touch-none">
-    <div class="fixed rounded-lg h-screen w-[20%]">
+  <body class="bg-orange-300 flex flex-row">
+    <div class="rounded-lg h-screen w-[20%]">
       <!-- <button class="bg-red-400 rounded-lg font-bold text-md p-2 m-1" id="devMode">DEV MODE</button> -->
-       <div class="flex flex-col gap-8 h-full pl-4 pt-4">
+      <div class="flex flex-col gap-8 h-full pl-4 pt-4">
         <img src="/suikawithfriendsLogoV1.png" alt="Suika With Friends Logo">
         <div id="multiplayer" class="flex flex-col gap-2 w-full rounded-lg h-fit ring-2 ring-black/20 p-4 bg-white/10">
           <p class="text-center text-white font-bold text-2xl">Multiplayer</p>
@@ -32,10 +32,9 @@
           </div>
           <button class="leave hidden text-center w-full bg-red-700 rounded-lg ring-2 hover:ring-black/50 text-white font-bold text-xl mt-2">Leave Room</button>
         </div>
-        <div id="miniBoardsContainer" class="mt-4 flex flex-col gap-2"></div>
-       </div>
+      </div>
     </div>
-    <div class="flex w-screen h-screen justify-center items-center">
+    <div class="flex flex-1 justify-center items-center">
       <div class="game flex flex-row max-sm:flex-col-reverse justify-between">
         <div class="left-section">
           <canvas class="debugCanvas absolute" hidden></canvas>
@@ -67,6 +66,7 @@
         </div>
       </div>
     </div>
+    <div id="miniBoardsContainer" class="h-screen w-[20%] max-h-screen grid grid-cols-2 gap-2 overflow-y-auto p-2 justify-items-center items-center content-start"></div>
     <script src="../scripts/game.ts" />
     <script src="../scripts/multiplayer.ts" />
 </body>
